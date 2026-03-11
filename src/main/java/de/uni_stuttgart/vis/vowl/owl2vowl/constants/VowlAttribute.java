@@ -1,6 +1,6 @@
 package de.uni_stuttgart.vis.vowl.owl2vowl.constants;
 
-import org.codehaus.jackson.annotate.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum VowlAttribute {
 	INTERSECTION("intersection"),

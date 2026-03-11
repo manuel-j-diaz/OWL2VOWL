@@ -14,8 +14,9 @@ import de.uni_stuttgart.vis.vowl.owl2vowl.util.ProjectInformations;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.semanticweb.owlapi.model.IRI;
 
 import java.util.*;
@@ -65,8 +66,8 @@ public class JsonGenerator {
 
 	public void export(Exporter exporter) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES, false);
-		mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		invoke(root);
 		exporter.write(mapper.writeValueAsString(root));
 	}
