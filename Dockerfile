@@ -1,17 +1,18 @@
-FROM maven:3.8.8-eclipse-temurin-8 AS build
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
+WORKDIR /build
 
-WORKDIR /var/lib/owl2vowl
-ADD pom.xml .
-RUN mvn dependency:go-offline -B -P war-release 2>/dev/null || true
+COPY .mvn .mvn
+COPY mvnw ./
+COPY pom.xml ./
+RUN ./mvnw dependency:go-offline -B -P war-release 2>/dev/null || true
 
-ADD src src
-RUN mvn package -DskipTests -B -P war-release
+COPY src ./src
+RUN ./mvnw package -DskipTests -B -P war-release
 
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
 
-FROM amazoncorretto:8-alpine
-
-WORKDIR /owl2vowl
-COPY --from=build /var/lib/owl2vowl/target/owl2vowl.war .
-CMD ["java", "-jar", "owl2vowl.war"]
+COPY --from=builder /build/target/owl2vowl.war owl2vowl.war
 
 EXPOSE 8080
+CMD ["java", "-jar", "owl2vowl.war"]
